@@ -6,7 +6,7 @@
 
 ### 1. NinaPro DB5 Dataset
 
-Ninapro is a publicly available multimodal database aimed at fostering machine learning research on human, robotic & prosthetic hands.
+NinaPro is a publicly available multimodal database aimed at fostering machine learning research on human, robotic & prosthetic hands.
 You can download the NinaPro DB5 at [https://ninapro.hevs.ch](https://ninapro.hevs.ch/).
 
 ### 2. Custom ASR Gesture Dataset
