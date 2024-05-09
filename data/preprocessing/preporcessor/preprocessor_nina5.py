@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 import scipy.io as scio
 from tqdm import tqdm
-from .preprocessor_base import *
 from data.preprocessing import *
 
 __all__ = ["PreprocessorNina5"]
