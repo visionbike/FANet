@@ -8,7 +8,7 @@ from tqdm import tqdm
 from .preprocessor_base import *
 from data.preprocessing import *
 
-__all__ = [""]
+__all__ = ["PreprocessorNina5"]
 
 
 class Nina5ID(Enum):
@@ -48,6 +48,21 @@ class PreprocessorNina5(PreprocessorBase):
                  quantize: bool = False,
                  use_relax_label: bool = True,
                  exercise: int = -1):
+        """
+        :param data_root: the raw data root.
+        :param step_size: step size for rolling windows. Default: 5.
+        :param window_size: kernel size for rolling windows. Default: 52.
+        :param imu: whether to use IMU data. Default: False.
+        :param dc: whether to use DC filter. Default: False.
+        :param rectif: whether to use data rectifying. Default: False.
+        :param lowpass: whether to use lowpass filter. Default: False.
+        :param highpass: whether to use highpass filter. Default: False.
+        :param minmax: whether to use minmax normalization. Default: False.
+        :param first_appearance: whether to get first appearance label, otherwise, to get major appearance label in the windows. Default: True.
+        :param quantize: whether to quantize data. Default: False.
+        :param use_relax_label: whether to use the "Relax" label. Default: True.
+        :param exercise: the exercise to preprocess, all exercised are used if exercise = -1. Default: -1.
+        """
         self.data_root = Path(data_root)
         self.data_root.mkdir(parents=True, exist_ok=True)
         self.step_size = step_size
@@ -64,6 +79,7 @@ class PreprocessorNina5(PreprocessorBase):
         self.exercise = exercise
         self.ex_start = 1 if self.exercise == -1 else self.exercise
         self.ex_end = Nina5.NUM_EXERCISES if self.exercise == -1 else self.exercise
+        super().__init__()
         self.emgs, self.imus, self.lbls, self.reps, self.subs = None, None, None, None, None
 
     def _load_data_from_file(self, path: str, ex: int) -> tuple[np.ndarray, ...]:
@@ -98,7 +114,7 @@ class PreprocessorNina5(PreprocessorBase):
         """
         emgs, imus, lbls, reps, subs = [], [], [], [], []
         for ex in tqdm(range(self.ex_start, self.ex_end + 1), file=sys.stdout):
-            path = self.data_root / f"s{sub}" / f"S{sub}_E{ex}_A1.mat"
+            path = str(self.data_root / f"s{sub}" / f"S{sub}_E{ex}_A1.mat")
             data = self._load_data_from_file(path, ex)
             emgs += [data[0]]
             imus += [data[1]] if self.imu else data[1]
@@ -144,7 +160,7 @@ class PreprocessorNina5(PreprocessorBase):
             self.emgs = rectify(self.emgs, multiproc)
         if self.lowpass:
             print("# Smoothing by low-pass filtering...")
-            self.emgs = filter_lowpass_butterworth(self.emgs, 2.0, 200, 4, True, multiproc)
+            self.emgs = filter_lowpass_butterworth(self.emgs, 2.0, 200, 1, True, multiproc)
         if self.minmax:
             print("# Min-max normalization...")
             self.emgs = norm_minmax(self.emgs, None, None, multiproc)
@@ -345,15 +361,15 @@ class PreprocessorNina5(PreprocessorBase):
                                           imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
                                           lbl=self.lbls[pretrain_idxs].copy())
                 ### transferring data
-                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[0])))
+                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[:2])))
                 data_transfer_train = dict(emg=self.emgs[transfer_idxs].copy(),
                                            imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
                                            lbl=self.lbls[transfer_idxs].copy())
-                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[1])))
+                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[2])))
                 data_transfer_val = dict(emg=self.emgs[transfer_idxs].copy(),
                                          imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
                                          lbl=self.lbls[transfer_idxs].copy())
-                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[2:])))
+                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[3:])))
                 data_transfer_test = dict(emg=self.emgs[transfer_idxs].copy(),
                                           imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
                                           lbl=self.lbls[transfer_idxs].copy())
