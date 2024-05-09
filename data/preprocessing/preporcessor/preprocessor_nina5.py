@@ -289,7 +289,7 @@ class PreprocessorNina5(PreprocessorBase):
             subs_unique = np.unique(self.subs)
             for sub in subs_unique:
                 print(f"Subject #{sub}...")
-                # get repetitions for train/val/test sets...
+                # get subjects for train/val/test sets...
                 subs_trainval = subs_unique[np.where(np.isin(subs_unique, sub, invert=True))]
                 subs_val = subs_trainval[0 if sub == len(subs_unique) else (sub - 1)]
                 subs_train = np.setdiff1d(subs_trainval, subs_val)
@@ -327,36 +327,50 @@ class PreprocessorNina5(PreprocessorBase):
             subs_unique = np.unique(self.subs)
             for sub in subs_unique:
                 print(f"Subject #{sub}...")
-                # get repetitions for train/val/test sets...
-                subs_trainval = subs_unique[np.where(np.isin(subs_unique, sub, invert=True))]
-                subs_val = subs_trainval[0 if sub == len(subs_unique) else (sub - 1)]
-                subs_train = np.setdiff1d(subs_trainval, subs_val)
-                subs_test = sub
+                ### pretraining data
+                sub_idxs = np.where(np.isin(self.subs, sub))
                 # split train set
-                sub_idxs = np.where(np.isin(self.subs, subs_train))
-                idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique)))
-                data_train = dict(emg=self.emgs[idxs].copy(),
-                                  imu=self.imus[idxs].copy() if self.imu else self.imus,
-                                  lbl=self.lbls[idxs].copy())
+                pretrain_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, valtest_reps, invert=True)))
+                data_pretrain_train = dict(emg=self.emgs[pretrain_idxs].copy(),
+                                           imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
+                                           lbl=self.lbls[pretrain_idxs].copy())
                 # split val set
-                sub_idxs = np.where(np.isin(self.subs, subs_val))
-                idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique)))
-                data_val = dict(emg=self.emgs[idxs].copy(),
-                                imu=self.imus[idxs].copy() if self.imu else self.imus,
-                                lbl=self.lbls[idxs].copy())
+                pretrain_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, valtest_reps[:-1])))
+                data_pretrain_val = dict(emg=self.emgs[pretrain_idxs].copy(),
+                                         imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
+                                         lbl=self.lbls[pretrain_idxs].copy())
                 # split test set
-                sub_idxs = np.where(np.isin(self.subs, subs_test))
-                idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique)))
-                data_test = dict(emg=self.emgs[idxs].copy(),
-                                 imu=self.imus[idxs].copy() if self.imu else self.imus,
-                                 lbl=self.lbls[idxs].copy())
-                print(f"train data: shape=(emg: {data_train['emg'].shape}, imu: {data_train['imu'].shape}), train target: shape={data_train['lbl'].shape}")
-                print(f"test data: shape=(emg: {data_test['emg'].shape}, imu: {data_test['imu'].shape}), test target: shape={data_test['lbl'].shape}")
-                print(f"val data: shape=(emg: {data_val['emg'].shape}, imu: {data_val['imu'].shape}), val target: shape={data_val['lbl'].shape}")
+                pretrain_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, valtest_reps[-1])))
+                data_pretrain_test = dict(emg=self.emgs[pretrain_idxs].copy(),
+                                          imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
+                                          lbl=self.lbls[pretrain_idxs].copy())
+                ### transferring data
+                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[0])))
+                data_transfer_train = dict(emg=self.emgs[transfer_idxs].copy(),
+                                           imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
+                                           lbl=self.lbls[transfer_idxs].copy())
+                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[1])))
+                data_transfer_val = dict(emg=self.emgs[transfer_idxs].copy(),
+                                         imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
+                                         lbl=self.lbls[transfer_idxs].copy())
+                transfer_idxs = np.intersect1d(sub_idxs, np.where(np.isin(self.reps, reps_unique[2:])))
+                data_transfer_test = dict(emg=self.emgs[transfer_idxs].copy(),
+                                          imu=self.imus[pretrain_idxs].copy() if self.imu else self.imus,
+                                          lbl=self.lbls[transfer_idxs].copy())
+                print(f"pretrain train data: shape=(emg: {data_pretrain_train['emg'].shape}, imu: {data_pretrain_train['imu'].shape}), pretrain train target: shape={data_pretrain_train['lbl'].shape}")
+                print(f"pretrain test data: shape=(emg: {data_pretrain_test['emg'].shape}, imu: {data_pretrain_test['imu'].shape}), pretrain test target: shape={data_pretrain_test['lbl'].shape}")
+                print(f"pretrain val data: shape=(emg: {data_pretrain_val['emg'].shape}, imu: {data_pretrain_val['imu'].shape}), pretrain val target: shape={data_pretrain_val['lbl'].shape}")
+                print(f"transfer train data: shape=(emg: {data_transfer_train['emg'].shape}, imu: {data_transfer_train['imu'].shape}), transfer train target: shape={data_transfer_train['lbl'].shape}")
+                print(f"transfer test data: shape=(emg: {data_transfer_test['emg'].shape}, imu: {data_transfer_test['imu'].shape}), transfer test target: shape={data_transfer_test['lbl'].shape}")
+                print(f"transfer val data: shape=(emg: {data_transfer_val['emg'].shape}, imu: {data_transfer_val['imu'].shape}), transfer val target: shape={data_transfer_val['lbl'].shape}")
                 print("# Saving processed data...")
-                np.savez(str(path_save / f"train_fold{sub}.npz"), **data_train)
-                np.savez(str(path_save / f"test_fold{sub}.npz"), **data_test)
-                np.savez(str(path_save / f"val_fold{sub}.npz"), **data_val)
+                np.savez(str(path_save / f"pretrain_train_fold{sub}.npz"), **data_pretrain_train)
+                np.savez(str(path_save / f"pretrain_test_fold{sub}.npz"), **data_pretrain_test)
+                np.savez(str(path_save / f"pretrain_val_fold{sub}.npz"), **data_pretrain_val)
+                np.savez(str(path_save / f"transfer_train_fold{sub}.npz"), **data_transfer_train)
+                np.savez(str(path_save / f"transfer_test_fold{sub}.npz"), **data_transfer_test)
+                np.savez(str(path_save / f"transfer_val_fold{sub}.npz"), **data_transfer_val)
                 # release memory
-                del data_train, data_val, data_test
+                del data_pretrain_train, data_pretrain_val, data_pretrain_test, data_transfer_train, data_transfer_val, data_transfer_test
                 gc.collect()
+        print("Done!")
