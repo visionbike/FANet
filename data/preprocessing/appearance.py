@@ -8,7 +8,7 @@ __all__ = [
 ]
 
 
-def get_first_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> int | np.ndarray:
+def get_first_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> int | list[int]:
     """
     Get the first appearance of value in the window array.
 
@@ -16,7 +16,7 @@ def get_first_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = Tru
     :param multiproc: whether to use multiprocessing to process list of windows, otherwise, to use multithreading. Default: True.
     :return: the first appearance value or the first appearance array.
     """
-    def _get_first_appearance(x_: np.ndarray) -> int:
+    def _get_first_appearance(x_: np.ndarray):
         return pl.LazyFrame(x_).unique(maintain_order=True).collect().item(0, 0)
 
     if isinstance(x, np.ndarray):
@@ -30,12 +30,12 @@ def get_first_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = Tru
                 z = list(p.imap(_get_first_appearance, x, chunksize=chunk_size))
         else:
             z = list(map(_get_first_appearance, x))
-        return np.asarray(z)
+        return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")
 
 
-def get_major_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> int | np.ndarray:
+def get_major_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> int | list[int]:
     """
     Get the major appearance of value in the window array.
 
@@ -44,7 +44,7 @@ def get_major_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = Tru
     :return: the major appearance value or the first appearance array.
     """
 
-    def _get_major_appearance(x_: np.ndarray) -> int:
+    def _get_major_appearance(x_: np.ndarray):
         return pl.LazyFrame(x_).select(pl.col("colum_0").value_counts(sort=True)).unnest("column_0").collect().item(0, 0)
 
     if isinstance(x, np.ndarray):
@@ -58,6 +58,6 @@ def get_major_appearance(x: np.ndarray | list[np.ndarray], multiproc: bool = Tru
                 z = list(p.imap(get_major_appearance, x, chunksize=chunk_size))
         else:
             z = list(map(get_major_appearance, x))
-        return np.asarray(z)
+        return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")

@@ -27,6 +27,5 @@ class PreprocessorBase(ABC):
         :param mode: splitting mode.
         :param save_path: the saving path for the split data.
         :param valtest_reps: the repetition indices used for the validation and test sets. Default: None.
-        :return: None.
         """
         pass

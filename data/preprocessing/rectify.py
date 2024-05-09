@@ -28,4 +28,4 @@ def rectify(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> np.ndar
             z = list(map(rectify, x))
         return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")

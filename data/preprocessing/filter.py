@@ -47,7 +47,7 @@ def filter_lowpass_butterworth(x: np.ndarray | list[np.ndarray],
             z = list(map(partial(_filter_lowpass_butterworth, cutoff=cutoff, fs=fs, order=order, zero_phase=zero_phase), x))
         return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")
 
 
 def filter_highpass_butterworth(x: np.ndarray | list[np.ndarray],
@@ -86,7 +86,7 @@ def filter_highpass_butterworth(x: np.ndarray | list[np.ndarray],
             z = list(map(partial(_filter_highpass_butterworth, cutoff=cutoff, fs=fs, order=order, zero_phase=zero_phase), x))
         return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")
 
 
 def filter_DC(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> np.ndarray | list[np.ndarray]:
@@ -113,7 +113,7 @@ def filter_DC(x: np.ndarray | list[np.ndarray], multiproc: bool = True) -> np.nd
             z = list(map(filter_DC, x))
         return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")
 
 
 def filter_moving_average(x: np.ndarray | list[np.ndarray], window_size: int = 3, multiproc: bool = True) -> np.ndarray | list[np.ndarray]:
@@ -142,4 +142,4 @@ def filter_moving_average(x: np.ndarray | list[np.ndarray], window_size: int = 3
             z = list(map(filter_DC, x))
         return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")

@@ -36,4 +36,4 @@ def norm_minmax(x: np.ndarray | list[np.ndarray],
             z = list(map(partial(norm_minmax, minimum=minimum, maximum=maximum), x))
         return z
     else:
-        raise TypeError(f"Invalid input type data, got {type(x)}.")
+        raise TypeError(f"Invalid data type of input, got {type(x)}.")

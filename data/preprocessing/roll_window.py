@@ -8,7 +8,7 @@ __all__ = ["roll_window"]
 def roll_window(x: np.ndarray | list[np.ndarray],
                 step_size: int = 5,
                 window_size: int = 52,
-                multiproc: bool = True) -> np.ndarray:
+                multiproc: bool = True) -> np.ndarray | list[np.ndarray]:
     """
 
     :param x: the signal in shape of (L, C) or a list of signal windows.
@@ -32,4 +32,6 @@ def roll_window(x: np.ndarray | list[np.ndarray],
                     p.imap(partial(roll_window, step_size=step_size, window_size=window_size), x, chunksize=chunk_size))
         else:
             z = list(map(partial(roll_window, step_size=step_size, window_size=window_size), x))
-        return np.concatenate(z, axis=0)
+        return z
+    else:
+        TypeError(f"Invalid data type of input, got {type(x)}.")

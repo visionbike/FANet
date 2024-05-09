@@ -10,7 +10,7 @@ def get_dataloader(mode: str, data_name: str, **kwargs) -> l.LightningDataModule
         * "trainvaltest": data is split to train/val/test sets.
         * "session": data is split to inter-session cross validation.
         * "subject": data is split to inter-subject cross validation.
-        * "subject-adaptive": data is split to subject-adaptive transfer cross validation.
+        * "subject-adaptive-transfer": data is split to subject-adaptive transfer cross validation.
     :param data_name: the dataset name.
     :param kwargs: dataloader arguments.
     :return: the dataloader.
