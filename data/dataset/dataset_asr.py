@@ -14,10 +14,10 @@ class DatasetAsr(Dataset):
 
     def __init__(self,
                  data: np.ndarray,
-                 use_rest_label: bool = True) -> None:
+                 use_relax_label: bool = True) -> None:
         """
         :param data: the Nina DB5 data, include signal and its label.
-        :param use_rest_label: whether to use the "rest" label.
+        :param use_relax_label: whether to use the "relax" label.
         """
         super().__init__()
         # load data

@@ -12,10 +12,10 @@ class DatasetNina5(Dataset):
     NinaPro DB5 Dataset.
     """
 
-    def __init__(self, data: np.ndarray, use_rest_label: bool = True):
+    def __init__(self, data: np.ndarray, use_relax_label: bool = True):
         """
         :param data: the Nina DB5 data, include signal and its label.
-        :param use_rest_label: whether to use the "rest" label. Default: True
+        :param use_relax_label: whether to use the "relax" label. Default: True
         """
         super().__init__()
         # load data

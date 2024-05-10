@@ -1,0 +1,52 @@
+# Experiment Configuration
+ExpConfig:
+  experiment: 1
+  use_cuda: True
+  cudnn_benchmark: True
+  seed: 42
+  num_epochs: 60
+  summary: True
+  log: "neptune"      # "neptune", "tensorboard", "csv", "none"
+  num_devices: [0]   # -1, 1, 2, ...
+  split: 'session'
+  kfold: 15
+# Data configuration
+DataConfig:
+  name: "asr_dc_rectify_lowpass_minmax"
+  path: "./databases/raw_data_20231226/processed/s13_w130_dc_rectify_lowpass_minmax_first_relax/subject-adaptive-transfer"
+  num_classes: 9
+  batch_size: 128
+  num_workers: 10
+  dataset_kwargs:
+    use_relax_label: True
+# Network configuration
+NetworkConfig:
+  name: "mlp_baseline"
+  in_channels: 8
+  mid_channels: 512
+  drop_rate: 0.3
+  norm: "ln"          # ln, bn, affine
+  act: "mish"         # mish, gelu
+  attn_kwargs:
+    name: "attn_stft2"
+    in_channels: 512
+    in_dims: 130
+    n_fft: 100
+    hop_length: 50
+    window_name: 'tukey'
+# Criterion Configuration
+LossConfig:
+  name: "focal"
+  alpha: 6.0
+  gamma: 1.5
+# Optimizer Configuration
+OptimConfig:
+  name: "ranger20"
+  lr: 0.001
+# Scheduler Configuration
+SchedulerConfig:
+  name: "cosine_onecycle"
+  T_max: 40
+  T_start: 10
+  eta_min: 0.000001
+  eta_max: 0.001
