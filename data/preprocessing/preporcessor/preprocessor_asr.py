@@ -266,9 +266,9 @@ class PreprocessorAsr(PreprocessorBase):
                 print(f"test data: shape=(emg: {data_test['emg'].shape}, imu: {data_test['imu'].shape}), test target: shape={data_test['lbl'].shape}")
                 print(f"val data: shape=(emg: {data_val['emg'].shape}, imu: {data_val['imu'].shape}), val target: shape={data_val['lbl'].shape}")
                 print("# Saving processed data...")
-                np.savez(str(path_save / f"train_fold{rep}.npz"), **data_train)
-                np.savez(str(path_save / f"test_fold{rep}.npz"), **data_test)
-                np.savez(str(path_save / f"val_fold{rep}.npz"), **data_val)
+                np.savez(str(path_save / f"train_fold{rep + 1}.npz"), **data_train)
+                np.savez(str(path_save / f"test_fold{rep + 1}.npz"), **data_test)
+                np.savez(str(path_save / f"val_fold{rep + 1}.npz"), **data_val)
                 # release memory
                 del data_train, data_val, data_test
                 gc.collect()
