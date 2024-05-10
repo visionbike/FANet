@@ -24,7 +24,7 @@ def get_metrics(num_classes: int,
         f1_score=tmc.MulticlassF1Score(num_classes, average="macro")
     )
     if cm:
-        metrics['confusion_matrix'] = tmc.MulticlassConfusionMatrix(num_classes, normalize='true')
+        metrics["confusion_matrix"] = tmc.MulticlassConfusionMatrix(num_classes, normalize="true")
     metrics = tm.MetricCollection(
         metrics=metrics,
         prefix=prefix,

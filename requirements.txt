@@ -2,5 +2,8 @@ polars==0.20.25
 scipy==1.13.0
 pandas==2.2.2
 einops==0.8.0
+neptune==1.10.3
+matplotlib==3.8.4
+seaborn==0.13.2
 lightning==2.2.4
 complextorch==1.0.0
