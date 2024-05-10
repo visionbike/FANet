@@ -3,7 +3,7 @@ import lightning as l
 __all__ = ['get_dataloader']
 
 
-def get_dataloader(mode: str, data_name: str, **kwargs) -> l.LightningDataModule:
+def get_dataloader(mode: str, name: str, **kwargs) -> l.LightningDataModule:
     """
 
     :param mode: dataloader mode for different evaluation:
@@ -11,18 +11,18 @@ def get_dataloader(mode: str, data_name: str, **kwargs) -> l.LightningDataModule
         * "session": data is split to inter-session cross validation.
         * "subject": data is split to inter-subject cross validation.
         * "subject-adaptive-transfer": data is split to subject-adaptive transfer cross validation.
-    :param data_name: the dataset name.
+    :param name: the dataset name.
     :param kwargs: dataloader arguments.
     :return: the dataloader.
     """
-    if data_name == "asr":
+    if name == "asr":
         from .dataset import DatasetAsr
         dataset_ = DatasetAsr
-    elif data_name == "nina5":
+    elif name == "nina5":
         from .dataset import DatasetNina5
         dataset_ = DatasetNina5
     else:
-        raise ValueError(f"Invalid dataset name, got {data_name}.")
+        raise ValueError(f"Invalid dataset name, got {name}.")
 
     if mode == "trainvaltest":
         from .dataloader import DataloaderBase

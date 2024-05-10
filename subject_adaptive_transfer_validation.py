@@ -85,7 +85,7 @@ if __name__ == "__main__":
         if args.ExpConfig.log == "neptune":
             logger.log_model_summary(model_pretrain)
     data_configs = deepcopy(args.DataConfig)
-    data = get_dataloader(mode=args.ExpConfig.split, **data_configs)
+    data = get_dataloader(**data_configs)
     # setup trainer
     best_accs = {i: [] for i in range(1, args.ExpConfig.kfold + 1)}
     best_baccs = {i: [] for i in range(1, args.ExpConfig.kfold + 1)}

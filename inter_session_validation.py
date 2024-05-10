@@ -71,7 +71,7 @@ if __name__ == "__main__":
             logger.log_model_summary(model)
     # get dataloader
     data_configs = deepcopy(args.DataConfig)
-    data = get_dataloader(mode=args.ExpConfig.split, **data_configs)
+    data = get_dataloader(**data_configs)
 
     best_ckpts, best_accs, best_baccs, best_mccs, best_f1s = [], [], [], [], []
 
