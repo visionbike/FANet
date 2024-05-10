@@ -1,9 +1,6 @@
 polars==0.20.25
 scipy==1.13.0
-tqdm==4.66.4
-numpy==1.26.4
 pandas==2.2.2
 einops==0.8.0
-torch==2.3.0
 lightning==2.2.4
 complextorch==1.0.0
