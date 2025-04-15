@@ -1,11 +1,8 @@
 # FANet: Frequency-based Attention Networks for sEMG Hand Gesture Classification
 
-(Will be updated soon)
-
 Created by 
 
-This repository contains PyTorch implementation for Frequency-based attention network for sEMG Hand Gesture Classification 
-(IEEE SPL & IEEE RA-L (under-review)).
+This repository contains PyTorch implementation for Frequency-based attention network for sEMG Hand Gesture Classification
 
 ## Dataset
 
