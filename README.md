@@ -22,5 +22,6 @@ The data is collected using Mindrove Armband on 6 distinct subjects. It can be d
 If you find our work useful in your research, please consider citing:
 
 * P. T. -T. Nguyen and C. -H. Kuo, "A Novel Surface Electromyographic Gesture Recognition Using Discrete Cosine Transform-Based Attention Network," in IEEE Signal Processing Letters, vol. 31, pp. 266-270, 2024, doi: 10.1109/LSP.2023.3348298.
+* P. T. -T. Nguyen, S. -F. Su and C. -H. Kuo, "A Frequency-Based Attention Neural Network and Subject-Adaptive Transfer Learning for sEMG Hand Gesture Classification," in IEEE Robotics and Automation Letters, vol. 9, no. 9, pp. 7835-7842, Sept. 2024, doi: 10.1109/LRA.2024.3433748.
 
 
